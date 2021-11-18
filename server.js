@@ -36,14 +36,22 @@ app.get("/app/users", (req, res) => {
 
 // READ a single user (HTTP method GET) at endpoint /app/user/:id 
 // req.params.id will put in whatever key number is put into the relative path
-
+app.get("/app/users/:id", (req, res) => {	
+	const stmt = db.prepare("SELECT * FROM userinfo WHERE id = ?");
+	res.status(200).json(stmt.run(req.params.id));
+});
 // UPDATE a single user (HTTP method PATCH) at endpoint /app/update/user/:id
-
+app.patch("/app/update/user/:id", (req, res) => {	
+	const stmt = db.prepare("UPDATE userinfo SET user = COALESCE(?,user), pass = COALESCE(?,pass) WHERE id = ?"
+	);
+	const info = stmt.run(req.params.id);
+	res.status(200).json({"message": info.changes+ " record updated: ID " +req.params.id});
+});
 // DELETE a single user (HTTP method DELETE) at endpoint /app/delete/user/:id
 app.delete("/app/delete/user/:id", (req, res) => {	
 	const stmt = db.prepare("DELETE FROM userinfo WHERE id = ?");
 	const info = stmt.run(req.params.id);
-	res.status(200).json({"message": info.changes+ " record deleted: ID " +info.lastInsertRowid});
+	res.status(200).json({"message": info.changes+ " record deleted: ID " +req.params.id});
 });
 // Default response for any other request
 app.use(function(req, res){
