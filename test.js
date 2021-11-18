@@ -11,7 +11,7 @@ console.log('\nAll records in my database:', db.name)
 console.log(all)
 
 const getuser = db.prepare('SELECT * FROM userinfo WHERE id = ?')
-const output = getuser.get('1')
+const output = getuser.get('2')
 
 console.log("\nFull record for username", output.user)
 console.log(output)
