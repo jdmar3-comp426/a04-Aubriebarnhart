@@ -23,14 +23,19 @@ app.get("/app/", (req, res, next) => {
 
 // Define other CRUD API endpoints using express.js and better-sqlite3
 // CREATE a new user (HTTP method POST) at endpoint /app/new/
-
+app.post("/app/new/",  (req, res) => {
+	const stmt = db.prepare("INSERT INTO userinfo (user, pass) VALUES (?, ?)");
+	const info = stmt.run(req.body.user, md5(req.body.pass));
+	res.status(201).json({"message": info.changes+ " record created: ID " +info.lastInsertRowid});
+})
 // READ a list of all users (HTTP method GET) at endpoint /app/users/
 app.get("/app/users", (req, res) => {	
 	const stmt = db.prepare("SELECT * FROM userinfo").all();
 	res.status(200).json(stmt);
 });
 
-// READ a single user (HTTP method GET) at endpoint /app/user/:id
+// READ a single user (HTTP method GET) at endpoint /app/user/:id 
+// req.params.id will put in whatever key number is put into the relative path
 
 // UPDATE a single user (HTTP method PATCH) at endpoint /app/update/user/:id
 
@@ -41,3 +46,10 @@ app.use(function(req, res){
 	res.json({"message":"Endpoint not found. (404)"});
     res.status(404);
 });
+
+// Tell STDOUT that the server is stopped
+process.on('SIGTERM', () => {
+	server.close(() => {
+		console.log('Server stopped.')
+	})
+})
