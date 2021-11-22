@@ -38,7 +38,8 @@ app.get("/app/users", (req, res) => {
 // req.params.id will put in whatever key number is put into the relative path
 app.get("/app/user/:id", (req, res) => {	
 	const stmt = db.prepare("SELECT * FROM userinfo WHERE id = ?").get(req.params.id);
-	res.status(200).json(stmt);
+	res.json(stmt);
+	res.status(200);
 });
 // UPDATE a single user (HTTP method PATCH) at endpoint /app/update/user/:id
 app.patch("/app/update/user/:id", (req, res) => {	
