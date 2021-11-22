@@ -22,12 +22,12 @@ app.get("/app/", (req, res, next) => {
 });
 
 // Define other CRUD API endpoints using express.js and better-sqlite3
-// CREATE a new user (HTTP method POST) at endpoint /app/new/**added user */
+// CREATE a new user (HTTP method POST) at endpoint /app/new/*added user*/
 app.post("/app/new/user",  (req, res) => {
 	const stmt = db.prepare("INSERT INTO userinfo (user, pass) VALUES (?, ?)");
 	const info = stmt.run(req.body.user, req.body.pass);
 	res.status(201).json({"message": info.changes+ " record created: ID " +info.lastInsertRowid});
-})
+});
 // READ a list of all users (HTTP method GET) at endpoint /app/users/
 app.get("/app/users", (req, res) => {	
 	const stmt = db.prepare("SELECT * FROM userinfo").all();
@@ -48,9 +48,9 @@ app.patch("/app/update/user/:id", (req, res) => {
 	const info = stmt.run(req.body.user, req.body.pass, req.params.id);
 	res.status(200).json({"message": info.changes+ " record updated: ID " +req.params.id});
 });
-// DELETE a single user (HTTP method DELETE) at endpoint /app/delete/user/:id
+// DELETE a single user (HTTP method DELETE) at endpoint /app/delete/user/:id (deleted the get statement)
 app.delete("/app/delete/user/:id", (req, res) => {	
-	const stmt = db.prepare("DELETE FROM userinfo WHERE id = ?").get(req.params.id);
+	const stmt = db.prepare("DELETE FROM userinfo WHERE id = ?");
 	const info = stmt.run(req.params.id);
 	res.status(200).json({"message": info.changes+ " record deleted: ID " +req.params.id});
 });
